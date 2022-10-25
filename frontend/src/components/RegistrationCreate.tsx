@@ -34,10 +34,10 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function RegistrationCreate() {
-    const [student, setStudent] = useState<StudentInterface>({});
+    const [student, setStudent] = useState<StudentInterface>();
     const [subjects, setSubjects] = useState<SubjectsInterface[]>([]);
     const [states, setStates] = useState<StateInterface[]>([]);
-    const [registration, setRegistration] = useState<RegistrationInterface>({});
+    const [registration, setRegistration] = useState<Partial<RegistrationInterface>>({});
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(false);
 
@@ -59,23 +59,23 @@ function RegistrationCreate() {
             ...registration,
             [name]: value,
         });
-        console.log(`${name}, ${value}`)
     };
 
     const getStudents = async () => {
         let res = await GetOnlyStudent();
+        registration.StudentID=res.ID;
         if (res) {
             setStudent(res);
-            registration.StudentID=res.ID
+           
             console.log(res);
         }
     };
 
     const getSubjects = async () => {
         let res = await GetSubjects();
+        // registration.SubjectID=res.ID;
         if (res) {
             setSubjects(res);
-            console.log(res);
         }
     };
 
@@ -86,9 +86,6 @@ function RegistrationCreate() {
             console.log(res);
         }
     };
-
-
-
 
 
     useEffect(() => {
@@ -163,8 +160,8 @@ function RegistrationCreate() {
                         <FormControl fullWidth variant="outlined">
                             <p>รหัสนักศึกษา</p>
                             <Select
-                                native
-
+                               variant="outlined"
+                               id="StudentID"
                                 value={registration.StudentID + ""}
                                 onChange={handleChange}
                                 disabled
@@ -172,9 +169,7 @@ function RegistrationCreate() {
                                     name: "StudentID",
                                 }}
                             >
-                                <option aria-label="None" value="">
-                                    กรุณารหัสนักศึกษา
-                                </option>
+                              
                                 <option value={student?.ID} key={student?.ID}>
                                     {student?.S_ID}
                                 </option>
@@ -193,7 +188,7 @@ function RegistrationCreate() {
                                 }}
                             >
                                 <option aria-label="None" value="">
-                                    เลือกรายวิชา
+                                    กรุณาเลือกรายวิชา
                                 </option>
                                 {subjects.map((item: SubjectsInterface) => (
                                     <option value={item.ID} key={item.ID}>
@@ -228,7 +223,7 @@ function RegistrationCreate() {
                     <Grid item xs={12}>
                         <Button
                             component={RouterLink}
-                            to="/"
+                            to="/registrations"
                             variant="contained"
                             color="inherit"
                         >

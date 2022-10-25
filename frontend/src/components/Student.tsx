@@ -66,7 +66,7 @@ function Student() {
                     </Box>
                     <Box>
                         <Button component={RouterLink} to="/student/create" variant="contained" color="primary">
-                            สร้างข้อมูล
+                            สร้างข้อมูลนักศึกษา
                         </Button>
                     </Box>
                 </Box>

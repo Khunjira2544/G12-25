@@ -262,7 +262,7 @@ import { emitWarning } from "process";
                 <TextField fullWidth id="Password" type="string" variant="outlined" onChange={(event) => setTeacherPassword(event.target.value)} />
               </Grid>
               <Grid item xs={12}>
-              <Button component={RouterLink} to="/Teachers" variant="contained" sx={{ float: "left"}} onClick={submit} >กลับ</Button>
+              <Button component={RouterLink} to="/teachers" variant="contained" sx={{ float: "left"}} onClick={submit} >กลับ</Button>
               <Button variant="contained" sx={{ float: "right" }} onClick={submit} >บันทึกข้อมูลอาจารย์</Button>
               </Grid>
             </Grid>

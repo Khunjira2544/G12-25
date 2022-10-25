@@ -9,16 +9,57 @@ import (
 
 func CreateTeacher(c *gin.Context) {
 	var teacher entity.Teacher
+	var officers entity.Officer
+	var faculties entity.Faculty
+	var prefixes entity.Prefix
+	var educational entity.Educational
+
 	if err := c.ShouldBindJSON(&teacher); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := entity.DB().Create(&teacher).Error; err != nil {
+	// 9: ค้นหา time ด้วย id
+	if tx := entity.DB().Where("id = ?", teacher.OfficerID).First(&officers); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "officers not found"})
+		return
+	}
+
+	// 10: ค้นหา teahcher ด้วย id
+	if tx := entity.DB().Where("id = ?", teacher.FacultyID).First(&faculties); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "faculties not found"})
+		return
+	}
+
+	// 11: ค้นหา playlist ด้วย id
+	if tx := entity.DB().Where("id = ?", teacher.PrefixID).First(&prefixes); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "prefixes not found"})
+		return
+	}
+
+	// 11: ค้นหา playlist ด้วย id
+	if tx := entity.DB().Where("id = ?", teacher.EducationalID).First(&educational); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "educational not found"})
+		return
+	}
+
+	// 12: สร้าง WatchVideo
+	t := entity.Teacher{
+		Name:     teacher.Name,
+		Email:    teacher.Email,
+		Password: teacher.Password,
+
+		Officer:     officers,
+		Faculty:     faculties,
+		Prefix:      prefixes,
+		Educational: educational,
+	}
+
+	if err := entity.DB().Create(&t).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"data": teacher})
+	c.JSON(http.StatusCreated, gin.H{"data": t})
 }
 
 // GET /users

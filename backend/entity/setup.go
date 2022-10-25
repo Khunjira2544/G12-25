@@ -37,21 +37,28 @@ func SetupDatabase() {
 		//Registration
 		&State{},
 		&Registration{},
+		// Teacher_assessment
+		&Teacher_assessment{},
+		&Content_difficulty_level{},
+		&Content_quality{},
+		&Teaching_duration{},
 	)
 
 	db = database
 
-	password, err := bcrypt.GenerateFromPassword([]byte("Prachya1234"), 14)
-	password2, err := bcrypt.GenerateFromPassword([]byte("Sanploy12345"), 14)
+	// password, err := bcrypt.GenerateFromPassword([]byte("1234"), 14)
+	password2, err := bcrypt.GenerateFromPassword([]byte("12345"), 14)
 
 	db.Model(&Officer{}).Create(&Officer{
 		Name:     "Pratchaya",
 		Email:    "pratchaya@gmail.com",
-		Password: string(password),
+		S_ID:     "O11111",
+		Password: "1234",
 	})
 	db.Model(&Officer{}).Create(&Officer{
 		Name:     "Sanploy",
 		Email:    "sanploy@gmail.com",
+		S_ID:     "O22222",
 		Password: string(password2),
 	})
 
@@ -158,7 +165,7 @@ func SetupDatabase() {
 
 	//bill
 	Payment_ID1 := Payment{
-		Payment_ID:    "PM01",
+		PaymentID:     "PM01",
 		Name:          "ธนาคารกสิกรไทย",
 		Accountnumber: "741-326985-5",
 	}
@@ -166,7 +173,7 @@ func SetupDatabase() {
 	//--------------
 
 	Payment_ID2 := Payment{
-		Payment_ID:    "PM02",
+		PaymentID:     "PM02",
 		Name:          "ธนาคารไทยพานิชย์",
 		Accountnumber: "049-547213-5",
 	}
@@ -174,7 +181,7 @@ func SetupDatabase() {
 	//--------------
 
 	Payment_ID3 := Payment{
-		Payment_ID:    "PM03",
+		PaymentID:     "PM03",
 		Name:          "ธนาคารกรุงไทย",
 		Accountnumber: "924-336412-8",
 	}

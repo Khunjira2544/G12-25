@@ -10,7 +10,7 @@ import { GetTeachers } from "../services/HttpClientService";
 import { margin } from "@mui/system";
 
 function Teacher_List() {
-  const [Teacher, setTeacher] = useState<TeachersInterface []>([]);
+  const [Teacher, setTeacher] = useState<TeachersInterface[]>([]);
 
   useEffect(() => {
     getTeacher();
@@ -20,7 +20,7 @@ function Teacher_List() {
     let res = await GetTeachers();
     if (res) {
       setTeacher(res);
-    } 
+    }
   };
 
   const columns: GridColDef[] = [
@@ -49,7 +49,7 @@ function Teacher_List() {
       width: 200,
       valueFormatter: (params) => params.value.Password,
     },
-    
+
     {
       field: "Faculty",
       headerName: "สำนักวิชา",
@@ -77,7 +77,7 @@ function Teacher_List() {
           display="flex"
           sx={{
             marginTop: 2,
-            marginX:2,
+            marginX: 2,
           }}
         >
           <Box flexGrow={1}>
@@ -90,11 +90,15 @@ function Teacher_List() {
               ข้อมูลอาจารย์
             </Typography>
           </Box>
-
+          <Box>
+            <Button component={RouterLink} to="/teacher/create" variant="contained" color="primary">
+              สร้างข้อมูลอาจารย์
+            </Button>
+          </Box>
         </Box>
-        <div style={{ height: 400, width: "105%",marginLeft: "32", marginTop: "20px" }}>
+        <div style={{ height: 400, width: "105%", marginLeft: "32", marginTop: "20px" }}>
           <DataGrid
-            
+
             rows={Teacher}
             getRowId={(row) => row.ID}
             columns={columns}

@@ -14,7 +14,10 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SigninInterface } from "../models/ISignin";
-import { Login } from "../services/HttpClientService";
+import { Login, Login1 } from "../services/HttpClientService";
+import { FormControl, InputLabel, MenuItem, NativeSelect, SelectChangeEvent } from "@mui/material";
+import { TeachersInterface } from "../models/ITeacher";
+
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -51,6 +54,18 @@ function SignIn() {
 
     const submit = async () => {
         let res = await Login(signin);
+        if (res) {
+            setSuccess(true);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            setError(true);
+        }
+    };
+
+    const submit1 = async () => {
+        let res = await Login1(signin);
         if (res) {
             setSuccess(true);
             setTimeout(() => {
@@ -124,24 +139,24 @@ function SignIn() {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="Email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
+                                id="S_ID"
+                                label="User Name"
+                                name="s_id"
+                                autoComplete="u_id"
                                 autoFocus
-                                value={signin.Email || ""}
+                                value={signin.S_ID || ""}
                                 onChange={handleInputChange}
                             />
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                name="password"
-                                label="Password"
+                                name="phone"
+                                label="Phone"
                                 type="password"
-                                id="Password"
-                                autoComplete="current-password"
-                                value={signin.Password || ""}
+                                id="Phone"
+                                autoComplete="current-phone"
+                                value={signin.Phone || ""}
                                 onChange={handleInputChange}
                             />
                             <FormControlLabel
@@ -155,7 +170,16 @@ function SignIn() {
                                 sx={{ mt: 3, mb: 2 }}
                                 onClick={submit}
                             >
-                                Sign In
+                                Stuudent Sign In
+                            </Button>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                                onClick={submit1}
+                            >
+                                Officer Sign In
                             </Button>
                         </Box>
                     </Box>

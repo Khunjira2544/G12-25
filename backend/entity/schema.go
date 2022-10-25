@@ -8,9 +8,11 @@ import (
 
 type Officer struct {
 	gorm.Model
+	S_ID     string `gorm:"uniqueIndex"`
 	Name     string
 	Email    string `gorm:"uniqueIndex"`
 	Password string `json:"-"`
+
 	//ผู้ดูแลระบบ 1 คน สามารถบันทึกข้อมูลนักศึกษาได้หลายคน
 	Students []Student `gorm:"foreignKey:OfficerID"`
 
@@ -18,7 +20,7 @@ type Officer struct {
 
 	Subjects []Subject `gorm:"foreignKey:OfficerID"`
 
-	Bills []Bill
+	Bills []Bill `gorm:"foreignKey:OfficerID"`
 }
 
 type Faculty struct {
@@ -53,10 +55,11 @@ type Collegeyear struct {
 
 // bill
 type Payment struct {
-	Payment_ID    string `gorm:"primaryKey"`
+	gorm.Model
+	PaymentID     string `gorm:"primaryKey"`
 	Name          string
 	Accountnumber string `gorm:"uniqueIndex"`
-	Bills         []Bill `gorm:"foreignKey:Payment_ID"`
+	Bills         []Bill `gorm:"foreignKey:PaymentID"`
 }
 
 // Subject
@@ -91,21 +94,21 @@ type Teaching_duration struct {
 	gorm.Model
 	Description string `gorm:"uniqueIndex"`
 
-	Teacher_assessment []Teacher_assessment `gorm:"foreignKey:Teaching_duration_ID"`
+	Teacher_assessments []Teacher_assessment `gorm:"foreignKey:Teaching_durationID"`
 }
 
 type Content_difficulty_level struct {
 	gorm.Model
 	Description string `gorm:"uniqueIndex"`
 
-	Teacher_assessment []Teacher_assessment `gorm:"foreignKey:Content_difficulty_level_ID"`
+	Teacher_assessments []Teacher_assessment `gorm:"foreignKey:Content_difficulty_levelID"`
 }
 
 type Content_quality struct {
 	gorm.Model
 	Description string `gorm:"uniqueIndex"`
 
-	Teacher_assessment []Teacher_assessment `gorm:"foreignKey:Content_quality_ID"`
+	Teacher_assessments []Teacher_assessment `gorm:"foreignKey:Content_qualityID"`
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,8 +134,8 @@ type Student struct {
 	TeacherID *uint
 	Teacher   Teacher `gorm:"references:id"`
 
-	Registration       []Registration       `gorm:"foreignKey:StudentID"`
-	Teacher_assessment []Teacher_assessment `gorm:"foreignKey:Student_ID"`
+	Registration        []Registration       `gorm:"foreignKey:StudentID"`
+	Teacher_assessments []Teacher_assessment `gorm:"foreignKey:StudentID"`
 }
 
 type Registration struct {
@@ -143,27 +146,28 @@ type Registration struct {
 	StudentID *uint
 	Student   Student `gorm:"references:id"`
 	StateID   *uint
-	State     State `gorm:"references:id"`
+	State     State  `gorm:"references:id"`
+	Bills     []Bill `gorm:"foreignKey:RegistrationID"` //เพิ่ม
 }
 
 type Teacher_assessment struct {
 	gorm.Model
 	Comment string
 
-	Student_ID *uint
-	Student    Student `gorm:"references:id"`
+	StudentID *uint
+	Student   Student `gorm:"references:id"`
 
-	Teacher_ID *uint
-	Teacher    Teacher `gorm:"references:id"`
+	TeacherID *uint
+	Teacher   Teacher `gorm:"references:id"`
 
-	Teaching_duration_ID *uint
-	Teaching_duration    Teaching_duration `gorm:"references:id"`
+	Teaching_durationID *uint
+	Teaching_duration   Teaching_duration `gorm:"references:id"`
 
-	Content_difficulty_level_ID *uint
-	Content_difficulty_level    Content_difficulty_level `gorm:"references:id"`
+	Content_difficulty_levelID *uint
+	Content_difficulty_level   Content_difficulty_level `gorm:"references:id"`
 
-	Content_quality_ID *uint
-	Content_quality    Content_quality `gorm:"references:id"`
+	Content_qualityID *uint
+	Content_quality   Content_quality `gorm:"references:id"`
 }
 
 // Teacher ของเพื่อน
@@ -185,9 +189,9 @@ type Teacher struct {
 	EducationalID *uint
 	Educational   Educational `gorm:"references:id"`
 
-	Students            []Student `gorm:"foreignKey:TeacherID"` //
-	Subjects            []Subject `gorm:"foreignKey:TeacherID"` //
-	Teacher_assessments []Teacher_assessment
+	Students            []Student            `gorm:"foreignKey:TeacherID"` //
+	Subjects            []Subject            `gorm:"foreignKey:TeacherID"` //
+	Teacher_assessments []Teacher_assessment `gorm:"foreignKey:TeacherID"` //
 }
 
 type Subject struct {
@@ -215,17 +219,18 @@ type Subject struct {
 }
 
 type Bill struct {
-	Bill_ID             uint `gorm:"primaryKey"`
-	Datetimepay         string
-	Bill_StudentID      string
-	Bill_RegistrationID string
+	Bill_ID     *uint `gorm:"primaryKey"`
+	Datetimepay string
+	Total       *uint
+
+	RegistrationID *uint
+	Registration   Registration `gorm:"references:id"`
 
 	//FK
-	Payment_ID *string //ไม่ใช้ มันบัค`gorm:"references:payment_id"`
-	Payment    Payment
+	PaymentID *string //ไม่ใช้ มันบัค`gorm:"references:payment_id"`
+	Payment   Payment `gorm:"references:id"`
 
-	Total uint
 	//ต้องเพิ่มลงทะเบียน
 	OfficerID *uint
-	Officer   Officer
+	Officer   Officer `gorm:"references:id"`
 }

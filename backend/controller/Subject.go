@@ -40,11 +40,11 @@ func CreateSubject(c *gin.Context) {
 		return
 	}
 
-	// 11: ค้นหา playlist ด้วย id
-	if tx := entity.DB().Where("id = ?", subject.OfficerID).First(&officer); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "playlist not found"})
-		return
-	}
+	// // 11: ค้นหา playlist ด้วย id
+	// if tx := entity.DB().Where("id = ?", subject.OfficerID).First(&officer); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "playlist not found"})
+	// 	return
+	// }
 
 	// 12: สร้าง WatchVideo
 	s := entity.Subject{

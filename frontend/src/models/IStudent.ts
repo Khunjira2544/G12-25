@@ -4,6 +4,7 @@ import { TeachersInterface } from "./ITeacher";
 import { CollegeyearInterface } from "./ICollegeyear";
 
 export interface StudentInterface {
+  
     ID?: number;
     S_ID?: string;
     Name?: string;

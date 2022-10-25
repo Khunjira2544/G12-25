@@ -70,7 +70,7 @@ func main() {
 			//Subjectสุดแค่นี้
 
 			//bill
-			router.GET("/bills", controller.ListBills)
+			router.GET("/bill", controller.ListBills)
 			router.GET("/bill/:bill_id", controller.GetBill)
 			router.POST("/bills", controller.CreateBill)
 			router.GET("/previous_bill", controller.GetPreviousBill)
@@ -123,29 +123,29 @@ func main() {
 			router.DELETE("/Content_quality/:id", controller.DeleteContent_quality)
 			//ประเมิณอาจารย์ของเพื่อน สุดแค่นี้
 
+			//Register
+			router.GET("/states", controller.ListState)
+			router.GET("/states/:id", controller.GetState)
+			router.PATCH("/states", controller.UpdateState)
+			router.DELETE("/states/:id", controller.DeleteState)
+
+			//Registration Routes
+
+			router.GET("/registrations", controller.ListRegistration)
+			router.GET("/registrations/:id", controller.GetRegistration)
+			router.POST("/registrations", controller.CreateRegistration)
+			router.PATCH("/registrations", controller.UpdateRegistration)
+			router.DELETE("/registrations/:id", controller.DeleteRegistration)
+
 		}
 	}
-	
-	//Register
-	r.GET("/states", controller.ListState)
-	r.GET("/states/:id", controller.GetState)
-	r.PATCH("/states", controller.UpdateState)
-	r.DELETE("/states/:id", controller.DeleteState)
-
-	//Registration Routes
-
-	r.GET("/registrations", controller.ListRegistration)
-	r.GET("/registrations/:id", controller.GetRegistration)
-	r.POST("/registrations", controller.CreateRegistration)
-	r.PATCH("/registrations", controller.UpdateRegistration)
-	r.DELETE("/registrations/:id", controller.DeleteRegistration)
 
 	// Signup User Route
-	r.POST("/signup", controller.CreateOfficer)
+	r.POST("/signup", controller.CreateStudent)
 	// login User Route
 	r.POST("/login", controller.Login)
 	// student login
-	r.POST("/login_s", controller.Login_s)
+	r.POST("/login1", controller.Login1)
 
 	// Run the server go run main.go
 	r.Run()

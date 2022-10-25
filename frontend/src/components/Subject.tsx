@@ -6,48 +6,34 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { SubjectsInterface } from "../models/ISubject";
-
+import { GetSubjects } from "../services/HttpClientService";
 function Subject() {
     const [subjects, setSubjects] = useState<SubjectsInterface[]>([]);
-
-    const apiUrl = "http://localhost:8080/subjects";
 
     useEffect(() => {
         getSubjects();
     }, []);
 
-    const getSubjects = async () => {
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-    
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                if (res.data) {
-                    return setSubjects(res.data);
-                } else {
-                    return false;
-                }
-            });
+    const  getSubjects = async () => {
+        let res = await GetSubjects();
+        if (res) {
+            setSubjects(res);
+            console.log(res);
+        }
     };
 
     const columns: GridColDef[] = [
-        {field: "ID", headerName: "ลำดับ", width: 50 },
-        {field: "Code", headerName: "รหัสวิชา", width: 250 },
-        {field: "Name", headerName: "ชื่อวิชา", width: 250 },
-        {field: "Credit", headerName: "หน่วยกิต", width: 250 },
-        {field: "Section", headerName: "กลุ่ม", width: 250 },
-        {field: "Day", headerName: "วันที่เรียน", width: 250, },
-        {field: "Take", headerName: "รับ", width: 250 },
-        {field: "Teacher", headerName: "อาจารย์ผู้สอน", width: 150, valueFormatter: (params) => params.value.Name, },
-        {field: "Time", headerName: "ช่วงเวลาที่เปิดสอน", width: 150, valueFormatter: (params) => params.value.Period, },
-        {field: "Faculty", headerName: "สำนักวิชา", width: 150, valueFormatter: (params) => params.value.Name, },
-        {field: "Officer", headerName: "ผู้บันทึก", width: 150, valueFormatter: (params) => params.value.Name, },
+        { field: "ID", headerName: "ลำดับ", width: 50 },
+        { field: "Code", headerName: "รหัสวิชา", width: 250 },
+        { field: "Name", headerName: "ชื่อวิชา", width: 250 },
+        { field: "Credit", headerName: "หน่วยกิต", width: 250 },
+        { field: "Section", headerName: "กลุ่ม", width: 250 },
+        { field: "Day", headerName: "วันที่เรียน", width: 250, },
+        { field: "Take", headerName: "รับ", width: 250 },
+        { field: "Teacher", headerName: "อาจารย์ผู้สอน", width: 150, valueFormatter: (params) => params.value.Name, },
+        { field: "Time", headerName: "ช่วงเวลาที่เปิดสอน", width: 150, valueFormatter: (params) => params.value.Period, },
+        { field: "Faculty", headerName: "สำนักวิชา", width: 150, valueFormatter: (params) => params.value.Name, },
+        { field: "Officer", headerName: "ผู้บันทึก", width: 150, valueFormatter: (params) => params.value.Name, },
     ];
 
     return (
@@ -66,7 +52,7 @@ function Subject() {
                     </Box>
                     <Box>
                         <Button component={RouterLink} to="/subject/create" variant="contained" color="primary">
-                            สร้างข้อมูล
+                            สร้างข้อมูลรายวิชา
                         </Button>
                     </Box>
                 </Box>

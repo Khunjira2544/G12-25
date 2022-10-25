@@ -16,109 +16,106 @@ import TextField from "@mui/material/TextField";
 // import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
- import { StudentInterface } from "../models/IStudent";
- import { TeachersInterface } from "../models/ITeacher";
- import { Teaching_durationsInterface } from "../models/ITeaching_duration";
- import { Content_difficulty_levelsInterface } from "../models/IContent_difficulty_level";
- import { Content_qualitysInterface } from "../models/IContent_quality";
- import { Teacher_assessmentsInterface } from "../models/ITeacher_assessment";
- import { CommentsInterface } from "../models/IComment";     
+import { StudentInterface } from "../models/IStudent";
+import { TeachersInterface } from "../models/ITeacher";
+import { Teaching_durationsInterface } from "../models/ITeaching_duration";
+import { Content_difficulty_levelsInterface } from "../models/IContent_difficulty_level";
+import { Content_qualitysInterface } from "../models/IContent_quality";
+import { Teacher_assessmentsInterface } from "../models/ITeacher_assessment";
+
 
 import {
-    GetComment,
-    GetOnlyStudent,
-    GetTeacher,
-    GetTeaching_duration,
-    GetContent_difficulty_level,
-    GetContent_quality,
-    CreateTeacher_assessment,
-  } from "../services/HttpClientService";
-  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props,
-    ref
-  ) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
-  
-  function Teacher_assessmentCreate() {
-    const [student, setStudent] = useState<StudentInterface>({});
-    const [Teachers, setTeachers] = useState<TeachersInterface[]>([]);
-    const [Teaching_durations, setTeaching_durations] = useState<Teaching_durationsInterface[]>([]);
-    const [Content_difficulty_levels, setContent_difficulty_levels] = useState<Content_difficulty_levelsInterface[]>([]);
-    const [Content_qualitys, setContent_qualitys] = useState<Content_qualitysInterface[]>([]);
-    const [Teacher_assessment, setTeacher_assessments] = useState<Teacher_assessmentsInterface>({});
-    const [comment, setcomments] = useState<string>("");
+  GetOnlyStudent,
+  GetTeacher,
+  GetTeaching_duration,
+  GetContent_difficulty_level,
+  GetContent_quality,
+  CreateTeacher_assessment,
+} from "../services/HttpClientService";
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState(false);
+function Teacher_assessmentCreate() {
+  const [student, setStudent] = useState<StudentInterface>({});
+  const [Teachers, setTeachers] = useState<TeachersInterface[]>([]);
+  const [Teaching_durations, setTeaching_durations] = useState<Teaching_durationsInterface[]>([]);
+  const [Content_difficulty_levels, setContent_difficulty_levels] = useState<Content_difficulty_levelsInterface[]>([]);
+  const [Content_qualitys, setContent_qualitys] = useState<Content_qualitysInterface[]>([]);
+  const [Teacher_assessment, setTeacher_assessments] = useState<Partial<Teacher_assessmentsInterface>>({});
 
-    const handleClose = (
-      event?: React.SyntheticEvent | Event,
-      reason?: string
-    ) => {
-      if (reason === "clickaway") {
-        return;
-      }
-      setSuccess(false);
-      setError(false);
-    };
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
-    const handleChange = (event: SelectChangeEvent) => {
-      const name = event.target.name as keyof typeof Teacher_assessment;
-      const value = event.target.value;
-      setTeacher_assessments({
-          ...Teacher_assessment,
-          [name]: value,
-      });
-      console.log(`${name}: ${value}`);
-  };
-    const getStudent = async () => {
-      let res = await GetOnlyStudent();
-      if (res) {
-        setStudent(res);
-        Teacher_assessment.Student_ID = res.ID
-        console.log(res);
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
     }
+    setSuccess(false);
+    setError(false);
   };
-    const getcomment = async () => {
-     let res = await GetComment();
-      if (res) {
-       setcomments(res);
-       console.log(res);
-  }
-}; 
-    const getTeacher = async () => {
-      let res = await GetTeacher();
-        if (res) {
-          setTeachers(res);
-          console.log(res);
-  }
+
+  const handleChange = (event: SelectChangeEvent) => {
+    const name = event.target.name as keyof typeof Teacher_assessment;
+    const value = event.target.value;
+    setTeacher_assessments({
+      ...Teacher_assessment,
+      [name]: value,
+    });
+    console.log(`${name}: ${value}`);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<{ id?: string; value: any }>) => {
+    const id = event.target.id as keyof typeof Teacher_assessment;
+    const { value } = event.target;
+    setTeacher_assessments({ ...Teacher_assessment, [id]: value });
 };
 
-    const getTeaching_duration = async () => {
-      let res = await GetTeaching_duration();
-      if (res) {
-        setTeaching_durations(res);
-        console.log(res);
+  const getStudent = async () => {
+    let res = await GetOnlyStudent();
+    Teacher_assessment.StudentID = res.ID
+    if (res) {
+      setStudent(res);
+      console.log(res);
     }
   };
-      const getContent_difficulty_level = async () => {
-      let res = await GetContent_difficulty_level();
-      if (res) {
-        setContent_difficulty_levels(res);
-        console.log(res);
+  const getTeacher = async () => {
+    let res = await GetTeacher();
+    if (res) {
+      setTeachers(res);
+      console.log(res);
     }
   };
-      const getContent_quality = async () => {
-      let res = await GetContent_quality();
-      if (res) {
-        setContent_qualitys(res);
-        console.log(res);
+
+  const getTeaching_duration = async () => {
+    let res = await GetTeaching_duration();
+    if (res) {
+      setTeaching_durations(res);
+      console.log(res);
+    }
+  };
+  const getContent_difficulty_level = async () => {
+    let res = await GetContent_difficulty_level();
+    if (res) {
+      setContent_difficulty_levels(res);
+      console.log(res);
+    }
+  };
+  const getContent_quality = async () => {
+    let res = await GetContent_quality();
+    if (res) {
+      setContent_qualitys(res);
+      console.log(res);
     }
   };
 
   useEffect(() => {
-    getcomment();
     getStudent();
     getTeacher();
     getTeaching_duration();
@@ -134,12 +131,12 @@ import {
 
   async function submit() {
     let data = {
-      Student_ID: convertType(Teacher_assessment.Student_ID),
-      Teacher_ID: convertType(Teacher_assessment.Teacher_ID),
-      Teaching_duration_ID: convertType(Teacher_assessment.Teaching_duration_ID),
-      Content_difficulty_level_ID: convertType(Teacher_assessment.Content_difficulty_level_ID),
-      Content_quality_ID: convertType(Teacher_assessment.Content_quality_ID),
-      Comment: (comment),
+      Student_ID: convertType(Teacher_assessment.StudentID),
+      Teacher_ID: convertType(Teacher_assessment.TeacherID),
+      Teaching_duration_ID: convertType(Teacher_assessment.Teaching_durationID),
+      Content_difficulty_level_ID: convertType(Teacher_assessment.Content_difficulty_levelID),
+      Content_quality_ID: convertType(Teacher_assessment.Content_qualityID),
+      Comment: Teacher_assessment.Comment,
 
     };
     console.log("data");
@@ -193,17 +190,17 @@ import {
         </Box>
         <Divider />
         <Grid container spacing={3} sx={{ padding: 2 }}>
-        <Grid item xs={8}>
+          <Grid item xs={8}>
             <FormControl fullWidth variant="outlined">
               <p>รหัสนักศึกษา</p>
               <Select
                 native
-                
-                value={Teacher_assessment.Student_ID + ""}
+
+                value={Teacher_assessment.StudentID + ""}
                 onChange={handleChange}
                 disabled
                 inputProps={{
-                  name: "Student_ID",
+                  name: "StudentID",
                 }}
               >
                 <option aria-label="None" value="">
@@ -220,10 +217,10 @@ import {
               <p>อาจารย์ผู้สอน</p>
               <Select
                 native
-                value={Teacher_assessment.Teacher_ID + ""}
+                value={Teacher_assessment.TeacherID + ""}
                 onChange={handleChange}
                 inputProps={{
-                  name: "Teacher_ID",
+                  name: "TeacherID",
                 }}
               >
                 <option aria-label="None" value="">
@@ -242,10 +239,10 @@ import {
               <p>ระยะเวลาในการสอน</p>
               <Select
                 native
-                value={Teacher_assessment.Teaching_duration_ID + ""}
+                value={Teacher_assessment.Teaching_durationID + ""}
                 onChange={handleChange}
                 inputProps={{
-                  name: "Teaching_duration_ID",
+                  name: "Teaching_durationID",
                 }}
               >
                 <option aria-label="None" value="">
@@ -264,14 +261,14 @@ import {
               <p>ระดับความยากของเนื้อหา</p>
               <Select
                 native
-                value={Teacher_assessment.Content_difficulty_level_ID + ""}
+                value={Teacher_assessment.Content_difficulty_levelID + ""}
                 onChange={handleChange}
                 inputProps={{
-                  name: "Content_difficulty_level_ID",
+                  name: "Content_difficulty_levelID",
                 }}
               >
                 <option aria-label="None" value="">
-                เลือกระดับประเมิน
+                  เลือกระดับประเมิน
                 </option>
                 {Content_difficulty_levels.map((item: Content_difficulty_levelsInterface) => (
                   <option value={item.ID} key={item.ID}>
@@ -286,10 +283,10 @@ import {
               <p>คุณภาพของเนื้อหา</p>
               <Select
                 native
-                value={Teacher_assessment.Content_quality_ID + ""}
+                value={Teacher_assessment.Content_qualityID + ""}
                 onChange={handleChange}
                 inputProps={{
-                  name: "Content_quality_ID",
+                  name: "Content_qualityID",
                 }}
               >
                 <option aria-label="None" value="">
@@ -299,19 +296,26 @@ import {
                   <option value={item.ID} key={item.ID}>
                     {item.Description}
                   </option>
-                  
+
                 ))}
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={8}>
-                <p>ความคิดเห็นเพิ่มเติม</p>
-                <TextField fullWidth id="Comment" type="string" variant="outlined"  onChange={(event) => setcomments(event.target.value)} />
-              </Grid>
+            <FormControl fullWidth variant="outlined">
+              <p>ความคิดเห็นเพิ่มเติม</p>
+              <TextField
+                id="Comment"
+                value={Teacher_assessment.Comment || ""}
+                label="ป้อนความคิดเห็น"
+                onChange={handleInputChange}
+              />
+            </FormControl>
+          </Grid>
           <Grid item xs={12}>
             <Button
               component={RouterLink}
-              to="/Teacher_assessment"
+              to="/teacher_assessments"
               variant="contained"
               color="inherit"
             >

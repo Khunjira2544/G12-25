@@ -17,12 +17,14 @@ function Bills() {
   const [bills, setBills] = React.useState<BillsInterface[]>([]);
 
   const getBills = async () => {
-    const apiUrl = "http://localhost:8080/bills";
+    const apiUrl = "http://localhost:8080/bill";
 
     const requestOptions = {
       method: "GET",
 
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json" },
     };
 
     fetch(apiUrl, requestOptions)
@@ -40,17 +42,17 @@ function Bills() {
   const columns: GridColDef[] = [
     { field: "Bill_ID", headerName: "บิลที่", width: 100 },
 
-    { field: "Bill_StudentID", headerName: "รหัสนักศึกษา", width: 200 },
+    { field: "Student", headerName: "รหัสนักศึกษา", width: 200 },
 
-    { field: "Bill_RegistrationID", headerName: "วิชา", width: 150 },
+    { field: "Registration", headerName: "วิชา", width: 150 },
 
     { field: "Total", headerName: "จำนวนเงินที่ชำระ", width: 150 },
     
-    { field: "Payment_ID", headerName: "ธนาคารที่ชำระ", width: 150 },
+    { field: "Payment", headerName: "ธนาคารที่ชำระ", width: 150 ,valueFormatter: (params) => params.value.Name,},
 
     { field: "Datetimepay", headerName: "วันที่ชำระ", width: 150 },
     
-    { field: "Bill_OfficerID", headerName: "เจ้าหน้าที่การเงิน", width: 200 },
+    { field: "Officer", headerName: "เจ้าหน้าที่การเงิน", width: 200 ,valueFormatter: (params) => params.value.Name,},
 
     ];
 
@@ -81,7 +83,7 @@ function Bills() {
           <Box>
             <Button
               component={RouterLink}
-              to="/create"
+              to="/bill/create"
               variant="contained"
               color="primary"
             >

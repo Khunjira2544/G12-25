@@ -12,8 +12,58 @@ import (
 
 func CreateTeacher_assessment(c *gin.Context) {
 
-	var Teacher_assessment entity.Teacher_assessment
-	if err := c.ShouldBindJSON(&Teacher_assessment); err != nil {
+	var teacher_assessments entity.Teacher_assessment
+	var students entity.Student
+	var teaching_durations entity.Teaching_duration
+	var content_difficulty_levels entity.Content_difficulty_level
+	var content_qualitys entity.Content_quality
+	var teachers entity.Teacher
+
+	if err := c.ShouldBindJSON(&teacher_assessments); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// // 9: ค้นหา time ด้วย id
+	// if tx := entity.DB().Where("id = ?", teacher_assessments.StudentID).First(&students); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "students not found"})
+	// 	return
+	// }
+
+	// 10: ค้นหา teahcher ด้วย id
+	if tx := entity.DB().Where("id = ?", teacher_assessments.TeacherID).First(&teachers); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "teachers not found"})
+		return
+	}
+
+	// 11: ค้นหา playlist ด้วย id
+	if tx := entity.DB().Where("id = ?", teacher_assessments.Teaching_durationID).First(&teaching_durations); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "teaching_durations not found"})
+		return
+	}
+
+	// 12: ค้นหา playlist ด้วย id
+	if tx := entity.DB().Where("id = ?", teacher_assessments.Content_difficulty_levelID).First(&content_difficulty_levels); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "content_difficulty_levels not found"})
+		return
+	}
+
+	// 13: ค้นหา playlist ด้วย id
+	if tx := entity.DB().Where("id = ?", teacher_assessments.Content_qualityID).First(&content_qualitys); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "content_qualitys not found"})
+		return
+	}
+
+	ta := entity.Teacher_assessment{
+		Comment:                  teacher_assessments.Comment,
+		Student:                  students,
+		Teacher:                  teachers,
+		Teaching_duration:        teaching_durations,
+		Content_difficulty_level: content_difficulty_levels,
+		Content_quality:          content_qualitys,
+	}
+
+	if err := entity.DB().Create(&ta).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -21,15 +71,7 @@ func CreateTeacher_assessment(c *gin.Context) {
 
 	}
 
-	if err := entity.DB().Create(&Teacher_assessment).Error; err != nil {
-
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-		return
-
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": Teacher_assessment})
+	c.JSON(http.StatusOK, gin.H{"data": ta})
 
 }
 

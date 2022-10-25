@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/Khunjira2544/sa-65-project/entity"
-
 	"github.com/gin-gonic/gin"
 
 	"net/http"
@@ -17,6 +16,7 @@ func CreateBill(c *gin.Context) {
 	//เพิ่ม
 	var payment entity.Payment
 	var officer entity.Officer
+	var registration entity.Registration
 
 	if err := c.ShouldBindJSON(&bill); err != nil {
 
@@ -27,7 +27,7 @@ func CreateBill(c *gin.Context) {
 	}
 
 	//เพิ่ม
-	if tx := entity.DB().Where("payment_id = ?", bill.Payment_ID).First(&payment); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("payment_id = ?", bill.PaymentID).First(&payment); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "payment type not found"})
 		return
 	}
@@ -35,16 +35,20 @@ func CreateBill(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "officer not found"})
 		return
 	}
+
+	if tx := entity.DB().Where("id = ?", bill.RegistrationID).First(&registration); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "registration not found"})
+		return
+	}
 	//เพิ่ม
 
 	b := entity.Bill{
-		Bill_ID:             bill.Bill_ID,
-		Datetimepay:         bill.Datetimepay,
-		Bill_StudentID:      bill.Bill_StudentID,
-		Bill_RegistrationID: bill.Bill_RegistrationID,
-		Payment:             payment, // โยงความสัมพันธ์กับ Entity Payment
-		Officer:             officer, // โยงความสัมพันธ์กับ Entity User
-		Total:               bill.Total,
+		Bill_ID:      bill.Bill_ID,
+		Datetimepay:  bill.Datetimepay,
+		Registration: registration, // โยงความสัมพันธ์กับ Entity Registration
+		Payment:      payment,      // โยงความสัมพันธ์กับ Entity Payment
+		Officer:      officer,      // โยงความสัมพันธ์กับ Entity Officer
+		Total:        bill.Total,
 	}
 
 	if err := entity.DB().Create(&b).Error; err != nil {
@@ -83,7 +87,7 @@ func ListBills(c *gin.Context) {
 
 	var bills []entity.Bill
 
-	if err := entity.DB().Preload("Officer").Preload("Payment").Raw("SELECT * FROM bills").Find(&bills).Error; err != nil {
+	if err := entity.DB().Preload("Officer").Preload("Payment").Preload("Registration").Preload("Student").Raw("SELECT * FROM bills").Find(&bills).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

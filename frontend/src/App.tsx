@@ -35,10 +35,11 @@ import Teacher_List from "./components/Teacher_list";
 import Teacher_Create from "./components/Teacher_Create";
 import Teacher_assessmentList from "./components/Teacher_assessmentList";
 import Teacher_assessmentCreate from "./components/Teacher_assessmentcreate";
-// import SignIn from "./components/SignInStudent";
 import RegistrationCreate from "./components/RegistrationCreate";
 import Registration from "./components/Registration";
 import Subject from "./components/Subject";
+import AppStudent from "./components/AppStudent";
+import AppOfficer from "./components/AppOfficer";
 
 const drawerWidth = 240;
 
@@ -94,20 +95,18 @@ const mdTheme = createTheme();
 
 const menu = [
   { name: "หน้าแรก", icon: <HomeIcon />, path: "/" },
-  { name: "บันทึกข้อมูลนักศึกษา", icon: <PeopleIcon />, path: "/Student/create" },
-  { name: "ข้อมูลนักศึกษา", icon: <BookIcon />, path: "Students" },
-  { name: "List รายวิชา", icon: <BookIcon />, path: "/subjects" },
-  { name: "สร้างข้อมูลอาจารย์", icon: <PeopleIcon />, path: "/Teacher_create" },
-  { name: "List ข้อมูลอาจารย์", icon: <BookIcon />, path: "/Teacher_list" },
-  { name: "สร้างบิล", icon: <BookIcon />, path: "/bill/create" },
-  { name: "List ข้อมูลการชำระค่าลงทะเบียนเรียน", icon: <BookIcon />, path: "/bills" },
-  { name: "ประเมินผู้สอน", icon: <PeopleIcon />, path: "/Teacher_assessment/create" },
-  { name: "ประเมินผู้สอน", icon: <BookIcon />, path: "/Teacher_assessment" },
-  { name: "ข้อมูลการลงทะเบียนเรียน", icon: <BookIcon />, path: "/Registration" },
+  { name: "ข้อมูลOfficer", icon: <BookIcon />, path: "/officers" },
+  { name: "ระบบข้อมูลนักศึกษา", icon: <BookIcon />, path: "/students" },
+  { name: "ระบบข้อมูลรายวิชา", icon: <BookIcon />, path: "/subjects" },
+  { name: "ระบบข้อมูลอาจารย์", icon: <BookIcon />, path: "/teachers" },
+  { name: "ระบบข้อมูลการชำระค่าลงทะเบียนเรียน", icon: <BookIcon />, path: "/bills" },
+  { name: "ระบบประเมินผู้สอน", icon: <BookIcon />, path: "/teacher_assessments" },
+  { name: "ระบบข้อมูลการลงทะเบียนเรียน", icon: <BookIcon />, path: "/registrations" },
 ];
 
 function App() {
   const [token, setToken] = useState<String>("");
+  const [token1, setToken1] = useState<String>("");
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -115,12 +114,24 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const token1 = localStorage.getItem("token1");
     if (token) {
       setToken(token);
     }
+    if (token1) {
+      setToken1(token1);
+    }
   }, []);
 
-  if (!token) {
+  if (token && !token1) {
+    return <AppStudent />
+  }
+
+  if (token1 && !token) {
+    return <AppOfficer />
+  }
+
+  if (!token && !token1) {
     return <SignIn />;
   }
 
@@ -159,7 +170,7 @@ function App() {
                 noWrap
                 sx={{ flexGrow: 1 }}
               >
-                System Analysis and Design 1/65 (ระบบรายวิชา)
+                System Analysis and Design 1/65 (ระบบลงทะเบียนเรียน)
               </Typography>
               <Button color="inherit" onClick={signout}>
                 ออกจากระบบ
@@ -211,10 +222,12 @@ function App() {
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
               <Routes>
                 <Route path="/" element={<Home />} />
+
                 <Route path="/officers" element={<Officers />} />
                 <Route path="/officer/create" element={<OfficerCreate />} />
-                <Route path="/Students" element={<Student />} />
-                <Route path="/Student/create" element={<StudentCreate />} />
+                
+                <Route path="/students" element={<Student />} />
+                <Route path="/student/create" element={<StudentCreate />} />
 
                 <Route path="/bills" element={<Bills />} />
                 <Route path="/bill/create" element={<BillCreate />} />
@@ -222,14 +235,14 @@ function App() {
                 <Route path="/subjects" element={<Subject />} />
                 <Route path="/subject/create" element={<SubjectCreate />} />
 
-                <Route path="/Teacher_list" element={<Teacher_List />} />
-                <Route path="/Teacher_create" element={<Teacher_Create />} />
+                <Route path="/teachers" element={<Teacher_List />} />
+                <Route path="/teacher/create" element={<Teacher_Create />} />
 
-                <Route path="/Teacher_assessment" element={<Teacher_assessmentList />} />
-                <Route path="/Teacher_assessment/create" element={<Teacher_assessmentCreate />} /> 
+                <Route path="/teacher_assessments" element={<Teacher_assessmentList />} />
+                <Route path="/teacher_assessment/create" element={<Teacher_assessmentCreate />} /> 
 
-                <Route path="/RegistrationCreate" element={<RegistrationCreate />} />
-                <Route path="/Registration" element={<Registration />} /> 
+                <Route path="/registration/create" element={<RegistrationCreate />} />
+                <Route path="/registrations" element={<Registration />} /> 
                 
               </Routes>
             </Container>

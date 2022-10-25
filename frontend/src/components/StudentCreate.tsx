@@ -135,7 +135,7 @@ function App() {
     let data = {
       CollegeyearID: convertType(student.CollegeyearID),
       FacultyID: convertType(student.FacultyID),
-      TeacherID: convertType(student.TeacherID),
+      TeacherID: convertType(student.TeacherID),  //
       OfficerID: convertType(student.OfficerID),
 
       S_ID:  S_id,     
@@ -343,7 +343,7 @@ function App() {
             {/*<Item>ผู้ปกครอง</Item>*/}
           </Grid>
           <Grid item xs={12}>
-              <Button variant="contained" color='info'>Back</Button>
+              <Button component={RouterLink} to="/students" variant="contained" color='info'>Back</Button>
               <Button 
               variant="contained" 
               color='success' 
